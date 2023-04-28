@@ -5,14 +5,21 @@
     <vendor>lcj0304</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-
+    <depends>org.jetbrains.android</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.lcj0304.sandboxmvvm.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <applicationService serviceImplementation="com.github.lcj0304.sandboxmvvm.services.MyApplicationService" />
+        <projectService serviceImplementation="com.github.lcj0304.sandboxmvvm.services.MyProjectService" />
+    </extensions>
+
+    <extensions defaultExtensionNs="com.android.tools.idea.wizard.template">
+        <wizardTemplateProvider  implementation="com.github.lcj0304.sandboxmvvm.provider.WizardTemplateProviderImpl"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.lcj0304.sandboxmvvm.listeners.MyFrameStateListener" topic="com.intellij.ide.FrameStateListener"/>
+        <listener class="com.github.lcj0304.sandboxmvvm.listeners.MyProjectManagerListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 </idea-plugin>
