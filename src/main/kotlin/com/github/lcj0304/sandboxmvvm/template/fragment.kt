@@ -29,7 +29,7 @@ import ${modulePackageName}.databinding.${bindingNameClass}
 
 
 ${getFileComments(desc)}
-class ${modelName}Fragment:MvvmBaseFragment<Fragment:${modelName}Fragment:VM, ${bindingNameClass}>() {
+class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>() {
     override val layoutId:Int
         get() = R.layout.${layoutName}
 
@@ -42,7 +42,7 @@ class ${modelName}Fragment:MvvmBaseFragment<Fragment:${modelName}Fragment:VM, ${
     }  
 
     override fun initViewObservable() {
-        viewModel?.uc?.let {
+        viewModel?.uc?.apply {
             
         }
     }
