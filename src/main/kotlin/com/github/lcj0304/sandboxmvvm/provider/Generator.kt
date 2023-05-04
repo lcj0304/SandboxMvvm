@@ -3,6 +3,19 @@ package com.github.lcj0304.sandboxmvvm.provider
 import com.android.tools.idea.wizard.template.*
 import com.github.lcj0304.sandboxmvvm.template.getModulePackageName
 
+val isListParameter = booleanParameter{
+    name = "是否包含列表"
+    default = false
+    help = "是否生成 recycler view 相关类"
+}
+
+val descName = stringParameter {
+    name = "Desc Name"
+    default = "描述信息"
+    help = "请输入描述"
+    constraints = listOf(Constraint.NONEMPTY)
+}
+
 /**
  * 生成模板配置弹窗 UI
  */
@@ -38,13 +51,6 @@ val fragmentGenerator
         }
 
 
-        val descName = stringParameter {
-            name = "Desc Name"
-            default = "描述信息"
-            help = "请输入描述"
-            constraints = listOf(Constraint.NONEMPTY)
-
-        }
 
         val packageName = stringParameter {
             name = "com.sandboxol.xxx.xxx"
@@ -54,13 +60,12 @@ val fragmentGenerator
         }
 
 
-
-
         widgets(
             TextFieldWidget(modelName),
             TextFieldWidget(layoutName),
             TextFieldWidget(descName),
             PackageNameWidget(packageName),
+            CheckBoxWidget(isListParameter),
         )
 
         recipe = {
@@ -71,6 +76,7 @@ val fragmentGenerator
                 modelName = modelName.value,
                 layoutName = layoutName.value,
                 desc = descName.value,
+                isList = isListParameter.value
             )
         }
     }
@@ -89,13 +95,11 @@ val activityGenerator
             WizardUiContext.NewModule
         )
 
-
         val modelName = stringParameter {
             name = "Model Name"
             default = "XxxZzz"
             help = "请输入Model的名字，将会生成 XxxZzzActivity XxxZzzViewModel activity_xxx_zzz.xml"
             constraints = listOf(Constraint.NONEMPTY)
-
         }
 
         val layoutName = stringParameter {
@@ -107,14 +111,6 @@ val activityGenerator
         }
 
 
-        val descName = stringParameter {
-            name = "Desc Name"
-            default = "描述信息"
-            help = "请输入描述"
-            constraints = listOf(Constraint.NONEMPTY)
-
-        }
-
         val packageName = stringParameter {
             name = "com.sandboxol.xxx.xxx"
             default = "包名"
@@ -123,13 +119,12 @@ val activityGenerator
         }
 
 
-
-
         widgets(
             TextFieldWidget(modelName),
             TextFieldWidget(layoutName),
             TextFieldWidget(descName),
             PackageNameWidget(packageName),
+            CheckBoxWidget(isListParameter),
         )
 
         recipe = {
@@ -140,6 +135,7 @@ val activityGenerator
                 modelName = modelName.value,
                 layoutName = layoutName.value,
                 desc = descName.value,
+                isList = isListParameter.value
             )
         }
     }

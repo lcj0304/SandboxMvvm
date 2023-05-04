@@ -4,10 +4,7 @@ import com.android.tools.idea.wizard.template.ModuleTemplateData
 import com.android.tools.idea.wizard.template.RecipeExecutor
 import com.android.tools.idea.wizard.template.impl.activities.common.addAllKotlinDependencies
 import com.github.lcj0304.sandboxmvvm.listeners.MyProjectManagerListener.Companion.projectInstance
-import com.github.lcj0304.sandboxmvvm.template.activityTemplate
-import com.github.lcj0304.sandboxmvvm.template.fragmentTemplate
-import com.github.lcj0304.sandboxmvvm.template.layoutTemplate
-import com.github.lcj0304.sandboxmvvm.template.viewModelTemplate
+import com.github.lcj0304.sandboxmvvm.template.*
 import java.io.File
 
 
@@ -18,6 +15,7 @@ fun RecipeExecutor.simpleFragmentRecipe(
     modelName: String,
     layoutName: String,
     desc: String,
+    isList:Boolean = false,
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -40,15 +38,26 @@ fun RecipeExecutor.simpleFragmentRecipe(
         viewModelTemplate(
             packageName,
             modelName,
-            desc
+            desc,
+            isList
         ), File(srcPath, "${modelName}VM.kt")
     )
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName),
+        layoutTemplate(packageName, modelName, isList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
+
+
+    if (isList) {
+        val layoutFolder = File(resPath, "layout")
+        save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
+        save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
+        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
+        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
+        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+    }
 }
 
 fun RecipeExecutor.simpleActivityRecipe(
@@ -58,6 +67,7 @@ fun RecipeExecutor.simpleActivityRecipe(
     modelName: String,
     layoutName: String,
     desc: String,
+    isList:Boolean = false,
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -80,13 +90,23 @@ fun RecipeExecutor.simpleActivityRecipe(
         viewModelTemplate(
             packageName,
             modelName,
-            desc
+            desc,
+            isList
         ), File(srcPath, "${modelName}VM.kt")
     )
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName),
+        layoutTemplate(packageName, modelName, isList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
+
+    if (isList) {
+        val layoutFolder = File(resPath, "layout")
+        save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
+        save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
+        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
+        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
+        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+    }
 }

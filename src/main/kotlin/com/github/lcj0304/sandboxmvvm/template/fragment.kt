@@ -21,7 +21,7 @@ fun fragmentTemplate(
 
     return """
 package $packageName      
-import ${packageName}.${modelName}VM
+
 import com.sandboxol.center.extension.getAndroidVM
 import com.sandboxol.common.base.app.mvvm.MvvmBaseFragment
 import ${modulePackageName}.R
