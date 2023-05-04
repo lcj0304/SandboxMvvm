@@ -9,6 +9,6 @@ import com.android.tools.idea.wizard.template.WizardTemplateProvider
  * @date : 2023/4/27 21:02
  */
 class WizardTemplateProviderImpl : WizardTemplateProvider() {
-    override fun getTemplates(): List<Template> = listOf(fragmentGenerator)
+    override fun getTemplates(): List<Template> = listOf(fragmentGenerator, activityGenerator)
 }
 
