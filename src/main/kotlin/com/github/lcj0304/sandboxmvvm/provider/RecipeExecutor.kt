@@ -16,6 +16,7 @@ fun RecipeExecutor.simpleFragmentRecipe(
     layoutName: String,
     desc: String,
     isList:Boolean = false,
+    isBedWar:Boolean = false,
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -29,7 +30,8 @@ fun RecipeExecutor.simpleFragmentRecipe(
             packageName,
             modelName,
             layoutName,
-            desc
+            desc,
+            isBedWar
         ), File(srcPath, "${modelName}Fragment.kt")
     )
 
@@ -54,9 +56,11 @@ fun RecipeExecutor.simpleFragmentRecipe(
         val layoutFolder = File(resPath, "layout")
         save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
         save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
-        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
-        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
-        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+        save(listFileStr(modulePackageName, packageName, modelName, "${packageName}.entity", "Entity"), File(srcPath, "${modelName.getListFileName()}.kt"))
+
+//        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
+//        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
+//        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
     }
 }
 
@@ -68,6 +72,7 @@ fun RecipeExecutor.simpleActivityRecipe(
     layoutName: String,
     desc: String,
     isList:Boolean = false,
+    isBedWar: Boolean = false
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -81,7 +86,8 @@ fun RecipeExecutor.simpleActivityRecipe(
             packageName,
             modelName,
             layoutName,
-            desc
+            desc,
+            isBedWar
         ), File(srcPath, "${modelName}Activity.kt")
     )
 

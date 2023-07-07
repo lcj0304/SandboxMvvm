@@ -9,7 +9,7 @@ fun viewModelTemplate(
     packageName: String,
     modelName: String,
     desc: String = "TODO:",
-    isListViewModel: Boolean = false,
+    isListViewModel: Boolean = false
 ): String {
     var listField = ""
     if (isListViewModel) {

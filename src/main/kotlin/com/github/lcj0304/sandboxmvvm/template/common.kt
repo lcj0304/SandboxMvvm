@@ -18,6 +18,10 @@ fun String.getListLayoutName(): String {
     return if (this.endsWith("List")) "${this}Layout" else "${this}ListLayout"
 }
 
+fun String.getListFileName():String {
+    return if (this.endsWith("List")) this else "${this}List"
+}
+
 fun String.getListModelName(): String {
     return if (this.endsWith("List")) "${this}Model" else "${this}ListModel"
 }

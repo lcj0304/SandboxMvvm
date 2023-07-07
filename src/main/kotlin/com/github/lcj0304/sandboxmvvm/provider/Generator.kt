@@ -3,6 +3,13 @@ package com.github.lcj0304.sandboxmvvm.provider
 import com.android.tools.idea.wizard.template.*
 import com.github.lcj0304.sandboxmvvm.template.getModulePackageName
 
+val isBedWarParameter = booleanParameter{
+    name = "是否是起床分包项目"
+    default = false
+    help = "平台和起床分包的getViewModel 方法名不一样"
+}
+
+
 val isListParameter = booleanParameter{
     name = "是否包含列表"
     default = false
@@ -66,6 +73,7 @@ val fragmentGenerator
             TextFieldWidget(descName),
             PackageNameWidget(packageName),
             CheckBoxWidget(isListParameter),
+            CheckBoxWidget(isBedWarParameter),
         )
 
         recipe = {
@@ -76,7 +84,8 @@ val fragmentGenerator
                 modelName = modelName.value,
                 layoutName = layoutName.value,
                 desc = descName.value,
-                isList = isListParameter.value
+                isList = isListParameter.value,
+                isBedWar = isBedWarParameter.value
             )
         }
     }
@@ -125,6 +134,7 @@ val activityGenerator
             TextFieldWidget(descName),
             PackageNameWidget(packageName),
             CheckBoxWidget(isListParameter),
+            CheckBoxWidget(isBedWarParameter),
         )
 
         recipe = {
@@ -135,7 +145,8 @@ val activityGenerator
                 modelName = modelName.value,
                 layoutName = layoutName.value,
                 desc = descName.value,
-                isList = isListParameter.value
+                isList = isListParameter.value,
+                isBedWar = isBedWarParameter.value
             )
         }
     }

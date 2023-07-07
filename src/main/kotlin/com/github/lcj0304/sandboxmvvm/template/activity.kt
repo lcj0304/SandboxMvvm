@@ -14,15 +14,16 @@ fun activityTemplate(
     modelName: String,
     layoutName: String,
     desc: String = "TODO:",
+    isBedWar:Boolean = false
 ): String {
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
     var baseModel = ""
-
+    var getViewModelName = if (isBedWar) "getVM" else "getViewModel"
     return """
 package $packageName      
 
-import com.sandboxol.center.extension.getAndroidVM
+import androidx.lifecycle.ViewModelProvider
 import com.sandboxol.common.base.app.mvvm.MvvmBaseActivity
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
@@ -33,8 +34,9 @@ class ${modelName}Activity:MvvmBaseActivity<${modelName}VM, ${bindingNameClass}>
     override val layoutId:Int
         get() = R.layout.${layoutName}
 
-    override fun getVM():${modelName}VM {
-        return getAndroidVM(${modelName}VM::class.java)
+    override fun ${getViewModelName}():${modelName}VM {
+        return ViewModelProvider.AndroidViewModelFactory(application)
+            .create(${modelName}VM::class.java)
     }
     
     override fun bindViewModel(binding:${bindingNameClass}?, viewModel:${modelName}VM?) {
