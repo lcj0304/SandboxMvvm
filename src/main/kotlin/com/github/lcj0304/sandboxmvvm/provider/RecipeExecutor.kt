@@ -111,8 +111,9 @@ fun RecipeExecutor.simpleActivityRecipe(
         val layoutFolder = File(resPath, "layout")
         save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
         save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
-        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
-        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
-        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+        save(listFileStr(modulePackageName, packageName, modelName, "${packageName}.entity", "Entity"), File(srcPath, "${modelName.getListFileName()}.kt"))
+    //        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
+//        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
+//        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
     }
 }

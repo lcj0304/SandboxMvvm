@@ -19,7 +19,7 @@ fun activityTemplate(
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
     var baseModel = ""
-    var getViewModelName = if (isBedWar) "getVM" else "getViewModel"
+    var getViewModelName = "getVM"
     return """
 package $packageName      
 
