@@ -35,8 +35,7 @@ class ${modelName}Activity:MvvmBaseActivity<${modelName}VM, ${bindingNameClass}>
         get() = R.layout.${layoutName}
 
     override fun ${getViewModelName}():${modelName}VM {
-        return ViewModelProvider.AndroidViewModelFactory(application)
-            .create(${modelName}VM::class.java)
+        return ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(${modelName}VM::class.java)
     }
     
     override fun bindViewModel(binding:${bindingNameClass}?, viewModel:${modelName}VM?) {

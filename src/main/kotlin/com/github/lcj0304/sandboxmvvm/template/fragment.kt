@@ -35,8 +35,9 @@ class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>
         get() = R.layout.${layoutName}
 
     override fun ${getViewModelName}():${modelName}VM {
-        return ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
-            .create(${modelName}VM::class.java)
+        return ViewModelProvider(this, 
+            ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
+            .get(${modelName}VM::class.java)
     }
     
     override fun bindViewModel(binding:${bindingNameClass}?, viewModel:${modelName}VM?) {
