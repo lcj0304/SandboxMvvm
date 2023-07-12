@@ -135,7 +135,7 @@ class ${modelName.getListModelName()}(val context: Context?) : DataListModel<Any
     }
 
     override fun getItemViewModel(item: Any?): ListItemViewModel<Any> {
-        return ${modelName.getListItemViewModelName()}(context, Any())
+        return ${modelName.getListItemViewModelName()}(context, item)
     }
 
     override fun onLoadData(listener: OnResponseListener<List<Any>>?) {
