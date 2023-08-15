@@ -18,7 +18,7 @@ fun fragmentTemplate(
 ): String {
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
-    var getViewModelName = if (isBedWar) "getVM" else "getViewModel"
+    var getViewModelName = if (isBedWar) "getVM" else "settingViewModel"
 
     return """
 package $packageName
@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.sandboxol.common.base.app.mvvm.MvvmBaseFragment
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
-
+import com.sandboxol.center.extension.getVMFromProvider
 
 ${getFileComments(desc)}
 class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>() {
@@ -35,9 +35,7 @@ class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>
         get() = R.layout.${layoutName}
 
     override fun ${getViewModelName}():${modelName}VM {
-        return ViewModelProvider(this, 
-            ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-            .get(${modelName}VM::class.java)
+        return getVMFromProvider(${modelName}VM::class.java)
     }
     
     override fun bindViewModel(binding:${bindingNameClass}?, viewModel:${modelName}VM?) {

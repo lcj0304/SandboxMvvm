@@ -19,7 +19,7 @@ fun activityTemplate(
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
     var baseModel = ""
-    var getViewModelName = "getVM"
+    var getViewModelName = "settingViewModel"
     return """
 package $packageName      
 
@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.sandboxol.common.base.app.mvvm.MvvmBaseActivity
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
-
+import com.sandboxol.center.extension.getVMFromProvider
 
 ${getFileComments(desc)}
 class ${modelName}Activity:MvvmBaseActivity<${modelName}VM, ${bindingNameClass}>() {
@@ -35,7 +35,7 @@ class ${modelName}Activity:MvvmBaseActivity<${modelName}VM, ${bindingNameClass}>
         get() = R.layout.${layoutName}
 
     override fun ${getViewModelName}():${modelName}VM {
-        return ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(${modelName}VM::class.java)
+        return getVMFromProvider(${modelName}VM::class.java)
     }
     
     override fun bindViewModel(binding:${bindingNameClass}?, viewModel:${modelName}VM?) {
