@@ -65,6 +65,12 @@ val fragmentGenerator
             help = "请输入包名"
             constraints = listOf(Constraint.NONEMPTY)
         }
+        val entityName = stringParameter {
+            name = "列表实体类名"
+            default = ""
+            help = "请输入列表实体类名，包含列表时有效"
+            constraints = listOf(Constraint.NONEMPTY)
+        }
 
 
         widgets(
@@ -74,6 +80,7 @@ val fragmentGenerator
             PackageNameWidget(packageName),
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isBedWarParameter),
+            TextFieldWidget(entityName),
         )
 
         recipe = {
@@ -85,7 +92,8 @@ val fragmentGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                isBedWar = isBedWarParameter.value
+                isBedWar = isBedWarParameter.value,
+                entityName = entityName.value
             )
         }
     }
@@ -126,7 +134,12 @@ val activityGenerator
             help = "请输入包名"
             constraints = listOf(Constraint.NONEMPTY)
         }
-
+        val entityName = stringParameter {
+            name = "列表实体类名"
+            default = ""
+            help = "请输入列表实体类名，包含列表时有效"
+            constraints = listOf(Constraint.NONEMPTY)
+        }
 
         widgets(
             TextFieldWidget(modelName),
@@ -135,6 +148,7 @@ val activityGenerator
             PackageNameWidget(packageName),
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isBedWarParameter),
+            TextFieldWidget(entityName),
         )
 
         recipe = {
@@ -146,7 +160,8 @@ val activityGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                isBedWar = isBedWarParameter.value
+                isBedWar = isBedWarParameter.value,
+                entityName = entityName.value
             )
         }
     }

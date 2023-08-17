@@ -76,7 +76,7 @@ fun listLayoutTemplate():String {
                 android:clipToPadding="false"
                 tools:itemCount="20"
                 />
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     </FrameLayout>
 </layout>"""
 }

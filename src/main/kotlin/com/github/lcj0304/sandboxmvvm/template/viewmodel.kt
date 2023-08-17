@@ -22,13 +22,13 @@ fun viewModelTemplate(
     return """
 package $packageName
        
-import android.app.Application        
+import android.app.Application
+import android.os.Bundle
 import com.sandboxol.common.base.app.mvvm.BaseModel
-import com.sandboxol.common.base.app.mvvm.BaseViewModel
-
+import com.sandboxol.common.base.app.mvvm.BundleViewModel
         
 ${getFileComments(desc)}   
-class ${modelName}VM(context: Application):BaseViewModel<BaseModel>(context) {
+class ${modelName}VM(context: Application, bundle:Bundle?):BundleViewModel<BaseModel>(context, bundle) {
     val uc = UIObservable()
     $listField
     init {

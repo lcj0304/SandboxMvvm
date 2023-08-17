@@ -104,6 +104,9 @@ fun listFileStr(
     entityName:String = "",
 ): String {
  val desc = ""
+    val entity = entityName.ifEmpty {
+        "Any"
+    }
 
     return """
 package $packageName    
@@ -128,23 +131,23 @@ class ${modelName.getListLayoutName()} : BaseListLayout() {
 
     
 ${getFileComments(desc)}
-class ${modelName.getListModelName()}(val context: Context?) : DataListModel<Any>(context) {
+class ${modelName.getListModelName()}(val context: Context?) : DataListModel<${entity}>(context) {
     
-    override fun onItemBind(itemBinder: ItemBinder, position: Int, item: ListItemViewModel<Any>?) {
+    override fun onItemBind(itemBinder: ItemBinder, position: Int, item: ListItemViewModel<${entity}>?) {
         itemBinder.bindItem(BR.ViewModel, R.layout.${modelName.getListLayoutItemXmlName()})
     }
 
-    override fun getItemViewModel(item: Any?): ListItemViewModel<Any> {
+    override fun getItemViewModel(item: ${entity}?): ListItemViewModel<${entity}> {
         return ${modelName.getListItemViewModelName()}(context, item)
     }
 
-    override fun onLoadData(listener: OnResponseListener<List<Any>>?) {
+    override fun onLoadData(listener: OnResponseListener<List<${entity}>>?) {
         
     }
 }
     
 ${getFileComments(desc)}
-class ${modelName.getListItemViewModelName()}(var context: Context?, item: Any?) : ListItemViewModel<Any>(context, item) {
+class ${modelName.getListItemViewModelName()}(var context: Context?, item: ${entity}?) : ListItemViewModel<${entity}>(context, item) {
 
     init {
        
