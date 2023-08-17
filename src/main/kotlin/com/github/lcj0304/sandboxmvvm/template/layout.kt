@@ -62,7 +62,7 @@ fun listLayoutTemplate():String {
             android:layout_height="match_parent"
             />
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             bind:onSmartRefreshCommand="@{ViewModel.onRefreshCommand}">
