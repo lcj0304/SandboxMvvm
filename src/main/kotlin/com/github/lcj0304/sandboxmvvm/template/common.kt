@@ -57,6 +57,7 @@ fun getModulePackageName(str: String): String {
 
 fun getDiff(entityName:String):String {
     return """
+    // TODO: 实现该接口    
     val diffItemCallback = object : DiffUtil.ItemCallback<${entityName}>() {
         override fun areItemsTheSame(oldItem: ${entityName}, newItem: ${entityName}): Boolean {
             return oldItem == newItem

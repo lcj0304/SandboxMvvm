@@ -174,6 +174,8 @@ val activityGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
+                isDiff = isDiffParameter.value,
+                isPageList = isPageListParameter.value,
 //                entityName = entityName.value
             )
         }

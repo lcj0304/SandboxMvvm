@@ -103,7 +103,7 @@ fun RecipeExecutor.simpleActivityRecipe(
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName, isList),
+        layoutTemplate(packageName, modelName, isList, isDiff, isPageList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
 
