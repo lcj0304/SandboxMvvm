@@ -14,16 +14,13 @@ fun fragmentTemplate(
     modelName: String,
     layoutName: String,
     desc: String = "TODO:",
-    isBedWar:Boolean = false,
 ): String {
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
-    var getViewModelName = if (isBedWar) "getVM" else "settingViewModel"
 
     return """
 package $packageName
       
-import androidx.lifecycle.ViewModelProvider
 import com.sandboxol.common.base.app.mvvm.MvvmBaseFragment
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
@@ -34,7 +31,7 @@ class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>
     override val layoutId:Int
         get() = R.layout.${layoutName}
 
-    override fun ${getViewModelName}():${modelName}VM {
+    override fun settingViewModel():${modelName}VM {
         return getVMFromProvider(${modelName}VM::class.java)
     }
     
@@ -43,9 +40,13 @@ class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>
     }  
 
     override fun initViewObservable() {
+        initView()
         viewModel?.uc?.apply {
             
         }
+    }
+    
+    private fun initView() {
     }
     
     companion object {

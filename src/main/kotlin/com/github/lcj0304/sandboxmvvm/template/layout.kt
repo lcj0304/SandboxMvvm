@@ -9,9 +9,11 @@ package com.github.lcj0304.sandboxmvvm.template
 fun layoutTemplate(
     packageName: String,
     modelName: String,
-    isListLayout:Boolean = false
+    isListLayout: Boolean = false,
+    isDiff: Boolean = false,
+    isPageList: Boolean = false,
 ): String {
-    val listLayout = if (isListLayout) listDataLayout else ""
+    val listLayout = if (isListLayout) getListLayout(isDiff, isPageList) else ""
 
     return """
 <?xml version="1.0" encoding="utf-8"?>
@@ -40,7 +42,15 @@ fun layoutTemplate(
  * list layout
  * @return String
  */
-fun listLayoutTemplate():String {
+fun listLayoutTemplate(
+    isDiff: Boolean = false,
+    isPageList: Boolean = false,
+): String {
+    val loadMore = if (isPageList) {
+        """bind:onLoadMoreCommand="@{ViewModel.onLoadMoreCommand}""""
+    } else {
+        ""
+    }
     return """<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/apk/res-auto"
@@ -49,7 +59,7 @@ fun listLayoutTemplate():String {
     <data>
         <variable
             name="ViewModel"
-            type="com.sandboxol.common.widget.rv.datarv.DataListViewModel" />
+            type="${getListViewModel(isDiff, isPageList)}" />
     </data>
 
     <FrameLayout
@@ -65,7 +75,9 @@ fun listLayoutTemplate():String {
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            bind:onSmartRefreshCommand="@{ViewModel.onRefreshCommand}">
+            bind:onSmartRefreshCommand="@{ViewModel.onRefreshCommand}"
+            $loadMore
+            >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -82,12 +94,11 @@ fun listLayoutTemplate():String {
 }
 
 
-
 /**
  * list layout
  * @return String
  */
-fun listItemLayoutTemplate(packageName:String, modelName:String):String {
+fun listItemLayoutTemplate(packageName: String, modelName: String): String {
     return """<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:bind="http://schemas.android.com/apk/res-auto"
@@ -108,14 +119,91 @@ android:layout_height="match_parent">
 </layout>"""
 }
 
+fun getListViewModel(isDiff: Boolean, isPage: Boolean): String {
+    return if (isDiff) {
+        if (isPage) {
+            return "com.sandboxol.common.widget.rv.pagerv.DiffPageListViewModel"
+        } else {
+            return "com.sandboxol.common.widget.rv.datarv.DiffDataListViewModel"
+        }
+    } else {
+        if (isPage) {
+            return "com.sandboxol.common.widget.rv.pagerv.PageListViewModel"
+        } else {
+            return "com.sandboxol.common.widget.rv.datarv.DataListViewModel"
+        }
+    }
+}
+
+
+fun getListLayout(isDiff: Boolean, isPage: Boolean): String {
+    return if (isDiff) {
+        if (isPage) {
+            diffPageDataLayout
+        } else {
+            diffListDataLayout
+        }
+    } else {
+        if (isPage) {
+            pageDataLayout
+        } else {
+            listDataLayout
+        }
+    }
+}
+
+
 val listDataLayout = """
 <com.sandboxol.common.widget.rv.datarv.DataRecyclerView
     android:layout_width="0dp"
     android:layout_height="0dp"
-        bind:layout_constraintTop_toTopOf="parent"
+    bind:layout_constraintTop_toTopOf="parent"
     bind:layout_constraintBottom_toBottomOf="parent"
     bind:layout_constraintEnd_toEndOf="parent"
     bind:layout_constraintStart_toStartOf="parent"
+    bind:listLayout="@{ViewModel.listLayout}"
+    bind:model="@{ViewModel.listModel}"
+/>
+""".trimIndent()
+
+
+val diffListDataLayout = """
+<com.sandboxol.common.widget.rv.datarv.DiffDataRecyclerView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    bind:layout_constraintTop_toTopOf="parent"
+    bind:layout_constraintBottom_toBottomOf="parent"
+    bind:layout_constraintEnd_toEndOf="parent"
+    bind:layout_constraintStart_toStartOf="parent"
+    bind:diffItemCallback="@{ViewModel.diffItemCallback}"
+    bind:listLayout="@{ViewModel.listLayout}"
+    bind:model="@{ViewModel.listModel}"
+/>
+""".trimIndent()
+
+
+val pageDataLayout = """
+<com.sandboxol.common.widget.rv.pagerv.PageRecyclerView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    bind:layout_constraintTop_toTopOf="parent"
+    bind:layout_constraintBottom_toBottomOf="parent"
+    bind:layout_constraintEnd_toEndOf="parent"
+    bind:layout_constraintStart_toStartOf="parent"
+    bind:listLayout="@{ViewModel.listLayout}"
+    bind:model="@{ViewModel.listModel}"
+/>
+""".trimIndent()
+
+val diffPageDataLayout = """
+<com.sandboxol.common.widget.rv.pagerv.DiffPageRecyclerView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    bind:layout_constraintTop_toTopOf="parent"
+    bind:layout_constraintBottom_toBottomOf="parent"
+    bind:layout_constraintEnd_toEndOf="parent"
+    bind:layout_constraintStart_toStartOf="parent"
+    bind:diffItemCallback="@{ViewModel.diffItemCallback}"
     bind:listLayout="@{ViewModel.listLayout}"
     bind:model="@{ViewModel.listModel}"
 />

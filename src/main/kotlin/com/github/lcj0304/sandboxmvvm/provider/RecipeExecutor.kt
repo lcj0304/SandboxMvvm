@@ -16,8 +16,9 @@ fun RecipeExecutor.simpleFragmentRecipe(
     layoutName: String,
     desc: String,
     isList:Boolean = false,
-    isBedWar:Boolean = false,
-    entityName:String = ""
+    isDiff:Boolean = false,
+    isPageList:Boolean = false,
+    entityName:String = "Any"
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -32,7 +33,6 @@ fun RecipeExecutor.simpleFragmentRecipe(
             modelName,
             layoutName,
             desc,
-            isBedWar
         ), File(srcPath, "${modelName}Fragment.kt")
     )
 
@@ -42,26 +42,23 @@ fun RecipeExecutor.simpleFragmentRecipe(
             packageName,
             modelName,
             desc,
-            isList
+            isList,
+            isDiff,
         ), File(srcPath, "${modelName}VM.kt")
     )
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName, isList),
+        layoutTemplate(packageName, modelName, isList, isDiff, isPageList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
 
 
     if (isList) {
         val layoutFolder = File(resPath, "layout")
-        save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
+        save(listLayoutTemplate(isDiff, isPageList), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
         save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
-        save(listFileStr(modulePackageName, packageName, modelName, "${packageName}.entity", entityName), File(srcPath, "${modelName.getListFileName()}.kt"))
-
-//        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
-//        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
-//        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+        save(listFileStr(modulePackageName, packageName, modelName, isPageList,"${packageName}.entity", entityName), File(srcPath, "${modelName.getListFileName()}.kt"))
     }
 }
 
@@ -73,8 +70,9 @@ fun RecipeExecutor.simpleActivityRecipe(
     layoutName: String,
     desc: String,
     isList:Boolean = false,
-    isBedWar: Boolean = false,
-    entityName:String = ""
+    isDiff:Boolean = false,
+    isPageList:Boolean = false,
+    entityName:String = "Any"
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -89,7 +87,6 @@ fun RecipeExecutor.simpleActivityRecipe(
             modelName,
             layoutName,
             desc,
-            isBedWar
         ), File(srcPath, "${modelName}Activity.kt")
     )
 
@@ -99,7 +96,8 @@ fun RecipeExecutor.simpleActivityRecipe(
             packageName,
             modelName,
             desc,
-            isList
+            isList,
+            isDiff
         ), File(srcPath, "${modelName}VM.kt")
     )
 
@@ -111,11 +109,8 @@ fun RecipeExecutor.simpleActivityRecipe(
 
     if (isList) {
         val layoutFolder = File(resPath, "layout")
-        save(listLayoutTemplate(), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
+        save(listLayoutTemplate(isDiff, isPageList), File(layoutFolder, "${modelName.getListLayoutXmlName()}.xml"))
         save(listItemLayoutTemplate(packageName, modelName), File(layoutFolder, "${modelName.getListLayoutItemXmlName()}.xml"))
-        save(listFileStr(modulePackageName, packageName, modelName, "${packageName}.entity", entityName), File(srcPath, "${modelName.getListFileName()}.kt"))
-    //        save(listModelTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListModelName()}.kt"))
-//        save(listLayoutTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListLayoutName()}.kt"))
-//        save(listItemTemplate(modulePackageName, packageName, modelName, desc), File(srcPath, "${modelName.getListItemViewModelName()}.kt"))
+        save(listFileStr(modulePackageName, packageName, modelName, isPageList,"${packageName}.entity", entityName), File(srcPath, "${modelName.getListFileName()}.kt"))
     }
 }

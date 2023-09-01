@@ -42,6 +42,9 @@ fun getCurrentDataTime(): String {
     return SimpleDateFormat("yyyy/MM/dd HH:mm").format(Date())
 }
 
+/**
+ * 模块的包名
+ */
 fun getModulePackageName(str: String): String {
     val array = str.split(".")
     return if (array.size > 3) {
@@ -49,4 +52,19 @@ fun getModulePackageName(str: String): String {
     } else {
         str
     }
+}
+
+
+fun getDiff(entityName:String):String {
+    return """
+    val diffItemCallback = object : DiffUtil.ItemCallback<${entityName}>() {
+        override fun areItemsTheSame(oldItem: ${entityName}, newItem: ${entityName}): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: ${entityName}, newItem: ${entityName}): Boolean {
+            return false
+        }
+    }
+    """.trimIndent()
 }
