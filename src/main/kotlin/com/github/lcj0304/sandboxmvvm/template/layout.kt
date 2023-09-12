@@ -47,7 +47,7 @@ fun listLayoutTemplate(
     isPageList: Boolean = false,
 ): String {
     val loadMore = if (isPageList) {
-        """bind:onLoadMoreCommand="@{ViewModel.onLoadMoreCommand}""""
+        """bind:onSmartLoadMoreCommand="@{ViewModel.onLoadMoreCommand}""""
     } else {
         ""
     }
