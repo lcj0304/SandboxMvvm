@@ -1,6 +1,9 @@
 package com.github.lcj0304.sandboxmvvm.provider
 
 import com.android.tools.idea.wizard.template.*
+import com.github.lcj0304.sandboxmvvm.template.ListInfo
+import com.github.lcj0304.sandboxmvvm.template.getListLayoutItemXmlName
+import com.github.lcj0304.sandboxmvvm.template.getListLayoutXmlName
 import com.github.lcj0304.sandboxmvvm.template.getModulePackageName
 
 
@@ -12,9 +15,9 @@ val isListParameter = booleanParameter{
 }
 
 val isPageListParameter = booleanParameter{
-    name = "列表是否分页列表"
+    name = "列表是否分页"
     default = false
-    help = "列表使用分页列表"
+    help = "列表使用分页"
     visible = {isListParameter.value}
 }
 
@@ -26,7 +29,7 @@ val isDiffParameter = booleanParameter{
 }
 
 val descName = stringParameter {
-    name = "Desc Name"
+    name = "类的描述信息"
     default = "描述信息"
     help = "请输入描述"
     constraints = listOf(Constraint.NONEMPTY)
@@ -52,7 +55,7 @@ val modulePackageName = stringParameter {
  */
 val fragmentGenerator
     get() = template {
-        name = "Sandbox Fragment"
+        name = "Sandbox MvvmFragment"
         description = "自动创建Fragment、ViewModel和xml"
         minApi = 14
         category = Category.Fragment
@@ -77,6 +80,23 @@ val fragmentGenerator
             suggest = { "fragment_${camelCaseToUnderlines(modelName.value)}" }
         }
 
+        val itemLayoutXmlFileName  = stringParameter {
+            name = "item布局文件名"
+            default = "xxx_zzz_list_item_view"
+            help = "列表 item 布局 文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutItemXmlName() }
+        }
+
+        val listLayoutXmlFileName  = stringParameter {
+            name = "list layout布局文件名"
+            default = "xxx_zzz_layout"
+            help = "列表布局文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutXmlName() }
+        }
 
 
 
@@ -98,10 +118,18 @@ val fragmentGenerator
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
+            TextFieldWidget(listLayoutXmlFileName),
+            TextFieldWidget(itemLayoutXmlFileName),
 //            TextFieldWidget(entityName),
         )
 
+
         recipe = {
+            val listInfo = ListInfo()
+            listInfo.isDiff = isDiffParameter.value
+            listInfo.isPageList = isPageListParameter.value
+            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             simpleFragmentRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -110,16 +138,14 @@ val fragmentGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                isDiff = isDiffParameter.value,
-                isPageList = isPageListParameter.value,
-//                entityName = entityName.value
+                listInfo
             )
         }
     }
 
 val activityGenerator
     get() = template {
-        name = "Sandbox Activity"
+        name = "Sandbox MvvmActivity"
         description = "自动创建Activity、ViewModel和xml"
         minApi = 14
         category = Category.Activity
@@ -130,21 +156,37 @@ val activityGenerator
         )
 
         val modelName = stringParameter {
-            name = "类名前缀。如输入XxxZzz 将会生成 XxxZzzActivity XxxZzzViewModel"
+            name = "Activity类名前缀。如输入XxxZzz 将会生成 XxxZzzActivity XxxZzzViewModel"
             default = "XxxZzz"
             help = "请输入Model的名字"
             constraints = listOf(Constraint.NONEMPTY)
         }
 
         val layoutName = stringParameter {
-            name = "layout name"
+            name = "Activity 布局文件名"
             default = "activity_xxx"
             help = "请输入布局的名字"
             constraints = listOf(Constraint.LAYOUT, Constraint.UNIQUE, Constraint.NONEMPTY)
             suggest = { "activity_${camelCaseToUnderlines(modelName.value)}" }
         }
 
+        val itemLayoutXmlFileName  = stringParameter {
+            name = "item布局文件名"
+            default = "xxx_zzz_list_item_view"
+            help = "列表 item 布局 文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutItemXmlName() }
+        }
 
+        val listLayoutXmlFileName  = stringParameter {
+            name = "list layout布局文件名"
+            default = "xxx_zzz_layout"
+            help = "列表布局文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutXmlName() }
+        }
 
 //        val entityName = stringParameter {
 //            name = "列表实体类名"
@@ -162,10 +204,17 @@ val activityGenerator
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
+            TextFieldWidget(listLayoutXmlFileName),
+            TextFieldWidget(itemLayoutXmlFileName),
 //            TextFieldWidget(entityName),
         )
 
         recipe = {
+            val listInfo = ListInfo()
+            listInfo.isDiff = isDiffParameter.value
+            listInfo.isPageList = isPageListParameter.value
+            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             simpleActivityRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -174,9 +223,72 @@ val activityGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                isDiff = isDiffParameter.value,
-                isPageList = isPageListParameter.value,
+                listInfo
 //                entityName = entityName.value
+            )
+        }
+    }
+
+
+val listViewGenerator
+    get() = template {
+        name = "Sandbox list view"
+        description = "自动创建list layout、listModel itemViewModel和xml"
+        minApi = 14
+        category = Category.Fragment
+        formFactor = FormFactor.Mobile
+        screens = listOf(
+            WizardUiContext.ActivityGallery,
+            WizardUiContext.MenuEntry,
+        )
+
+        val modelName = stringParameter {
+            name = "生成的类名前缀。如输入XxxZzz 将会生成 XxxZzzListLayout XxxZzzListModel  XxxZzzItemViewModel"
+            default = "XxxZzz"
+            help = "请输入Model的名字，将会生成 XxxZzzListLayout XxxZzzListModel"
+            constraints = listOf(Constraint.NONEMPTY)
+        }
+
+        val itemLayoutXmlFileName  = stringParameter {
+            name = "item布局文件名"
+            default = "xxx_zzz_list_item_view"
+            help = "列表 item 布局 文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutItemXmlName() }
+        }
+
+        val listLayoutXmlFileName  = stringParameter {
+            name = "list layout布局文件名"
+            default = "xxx_zzz_layout"
+            help = "列表布局文件名"
+            visible = {isListParameter.value}
+            constraints = listOf(Constraint.NONEMPTY)
+            suggest = { modelName.value.getListLayoutXmlName() }
+        }
+
+        widgets(
+            TextFieldWidget(modelName),
+            PackageNameWidget(classPackageName),
+            TextFieldWidget(modulePackageName),
+            CheckBoxWidget(isPageListParameter),
+            CheckBoxWidget(isDiffParameter),
+            TextFieldWidget(listLayoutXmlFileName),
+            TextFieldWidget(itemLayoutXmlFileName),
+        )
+
+        recipe = {
+            val listInfo = ListInfo()
+            listInfo.isDiff = isDiffParameter.value
+            listInfo.isPageList = isPageListParameter.value
+            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            saveListFile(
+                it as ModuleTemplateData,
+                modulePackageName.value,
+                classPackageName.value,
+                modelName.value,
+                listInfo
             )
         }
     }

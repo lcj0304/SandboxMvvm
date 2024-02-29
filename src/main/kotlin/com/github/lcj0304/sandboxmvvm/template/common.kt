@@ -2,7 +2,7 @@ package com.github.lcj0304.sandboxmvvm.template
 
 import com.android.tools.idea.wizard.template.camelCaseToUnderlines
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 
 fun getFileComments(desc: String): String {
@@ -18,7 +18,7 @@ fun String.getListLayoutName(): String {
     return if (this.endsWith("List")) "${this}Layout" else "${this}ListLayout"
 }
 
-fun String.getListFileName():String {
+fun String.getListFileName(): String {
     return if (this.endsWith("List")) this else "${this}List"
 }
 
@@ -35,7 +35,11 @@ fun String.getListLayoutXmlName(): String {
 }
 
 fun String.getListLayoutItemXmlName(): String {
-    return "item_${camelCaseToUnderlines(this)}_view"
+    return if (this.endsWith("List")) "${camelCaseToUnderlines(this)}_item_view" else "${
+        camelCaseToUnderlines(
+            this
+        )
+    }_list_item_view"
 }
 
 fun getCurrentDataTime(): String {
@@ -55,7 +59,7 @@ fun getModulePackageName(str: String): String {
 }
 
 
-fun getDiff(entityName:String):String {
+fun getDiff(entityName: String): String {
     return """
     // TODO: 实现该接口    
     val diffItemCallback = object : DiffUtil.ItemCallback<${entityName}>() {
