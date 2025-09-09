@@ -356,6 +356,11 @@ fun progressBarExampleActivityTemplate(
     layoutName: String,
     modulePackageName: String
 ): String {
+    // Convert layout name to binding class name (e.g., activity_example -> ActivityExampleBinding)
+    val bindingClassName = layoutName.split("_").joinToString("") { word ->
+        word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    } + "Binding"
+    
     return """
 package $packageName
 
@@ -363,16 +368,16 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ${modulePackageName}.R
-import ${modulePackageName}.databinding.${layoutName.split("_").joinToString("") { it.capitalize() }}Binding
+import ${modulePackageName}.databinding.$bindingClassName
 
 ${getFileComments("Example activity demonstrating $className usage")}
 class ${className}ExampleActivity : AppCompatActivity() {
     
-    private lateinit var binding: ${layoutName.split("_").joinToString("") { it.capitalize() }}Binding
+    private lateinit var binding: $bindingClassName
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ${layoutName.split("_").joinToString("") { it.capitalize() }}Binding.inflate(layoutInflater)
+        binding = $bindingClassName.inflate(layoutInflater)
         setContentView(binding.root)
         
         setupProgressBars()
