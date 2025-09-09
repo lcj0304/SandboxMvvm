@@ -292,3 +292,58 @@ val listViewGenerator
             )
         }
     }
+
+val roundedProgressBarGenerator
+    get() = template {
+        name = "Sandbox Rounded Progress Bar"
+        description = "自动创建自定义圆角进度条控件，支持圆角不被裁剪"
+        minApi = 14
+        category = Category.Other
+        formFactor = FormFactor.Mobile
+        screens = listOf(
+            WizardUiContext.ActivityGallery,
+            WizardUiContext.MenuEntry,
+        )
+
+        val className = stringParameter {
+            name = "进度条类名。如输入RoundedProgressView"
+            default = "RoundedProgressView"
+            help = "请输入自定义进度条类名"
+            constraints = listOf(Constraint.NONEMPTY, Constraint.CLASS)
+        }
+
+        val exampleLayoutName = stringParameter {
+            name = "示例布局文件名"
+            default = "activity_rounded_progress_example"
+            help = "请输入示例布局的名字"
+            constraints = listOf(Constraint.LAYOUT, Constraint.UNIQUE, Constraint.NONEMPTY)
+            suggest = { "activity_${camelCaseToUnderlines(className.value)}_example" }
+        }
+
+        val createExample = booleanParameter {
+            name = "是否创建示例Activity"
+            default = true
+            help = "生成示例Activity和布局来演示进度条用法"
+        }
+
+        widgets(
+            TextFieldWidget(className),
+            TextFieldWidget(descName),
+            PackageNameWidget(classPackageName),
+            TextFieldWidget(modulePackageName),
+            TextFieldWidget(exampleLayoutName),
+            CheckBoxWidget(createExample),
+        )
+
+        recipe = {
+            roundedProgressBarRecipe(
+                moduleData = it as ModuleTemplateData,
+                modulePackageName = modulePackageName.value,
+                packageName = classPackageName.value,
+                className = className.value,
+                exampleLayoutName = exampleLayoutName.value,
+                desc = descName.value,
+                createExample = createExample.value
+            )
+        }
+    }

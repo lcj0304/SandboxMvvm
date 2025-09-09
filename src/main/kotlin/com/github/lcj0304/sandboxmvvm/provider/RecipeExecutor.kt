@@ -13,6 +13,10 @@ import com.github.lcj0304.sandboxmvvm.template.listFileStr
 import com.github.lcj0304.sandboxmvvm.template.listItemLayoutTemplate
 import com.github.lcj0304.sandboxmvvm.template.listLayoutTemplate
 import com.github.lcj0304.sandboxmvvm.template.viewModelTemplate
+import com.github.lcj0304.sandboxmvvm.template.roundedProgressViewTemplate
+import com.github.lcj0304.sandboxmvvm.template.progressBarAttrsTemplate
+import com.github.lcj0304.sandboxmvvm.template.progressBarExampleLayoutTemplate
+import com.github.lcj0304.sandboxmvvm.template.progressBarExampleActivityTemplate
 import java.io.File
 
 
@@ -162,4 +166,61 @@ fun RecipeExecutor.saveListFile(
             "${packageName}.entity",
         ), File(srcPath, "${modelName.getListFileName()}.kt")
     )
+}
+
+fun RecipeExecutor.roundedProgressBarRecipe(
+    moduleData: ModuleTemplateData,
+    modulePackageName: String,
+    packageName: String,
+    className: String,
+    exampleLayoutName: String,
+    desc: String,
+    createExample: Boolean = true
+) {
+    val (projectData) = moduleData
+    val project = projectInstance ?: return
+    addAllKotlinDependencies(moduleData)
+    val srcPath = moduleData.srcDir.absolutePath
+    val resPath = moduleData.resDir.absolutePath
+    
+    // Save the custom progress view class
+    save(
+        roundedProgressViewTemplate(packageName, className, desc),
+        File(srcPath, "$className.kt")
+    )
+    
+    // Save the XML attributes definition
+    val valuesFolder = File(resPath, "values")
+    if (!valuesFolder.exists()) {
+        valuesFolder.mkdirs()
+    }
+    save(
+        progressBarAttrsTemplate(className),
+        File(valuesFolder, "${className.lowercase()}_attrs.xml")
+    )
+    
+    // Create example files if requested
+    if (createExample) {
+        val layoutFolder = File(resPath, "layout")
+        if (!layoutFolder.exists()) {
+            layoutFolder.mkdirs()
+        }
+        
+        // Save example layout
+        save(
+            progressBarExampleLayoutTemplate(packageName, className),
+            File(layoutFolder, "$exampleLayoutName.xml")
+        )
+        
+        // Save example activity
+        save(
+            progressBarExampleActivityTemplate(
+                packageName, 
+                className, 
+                exampleLayoutName,
+                modulePackageName
+            ),
+            File(srcPath, "${className}ExampleActivity.kt")
+        )
+    }
 }
