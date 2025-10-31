@@ -4,7 +4,7 @@ import com.android.tools.idea.wizard.template.ModuleTemplateData
 import com.android.tools.idea.wizard.template.RecipeExecutor
 import com.android.tools.idea.wizard.template.impl.activities.common.addAllKotlinDependencies
 import com.github.lcj0304.sandboxmvvm.listeners.MyProjectManagerListener.Companion.projectInstance
-import com.github.lcj0304.sandboxmvvm.template.ListInfo
+import com.github.lcj0304.sandboxmvvm.template.MoreInfo
 import com.github.lcj0304.sandboxmvvm.template.activityTemplate
 import com.github.lcj0304.sandboxmvvm.template.fragmentTemplate
 import com.github.lcj0304.sandboxmvvm.template.getListFileName
@@ -24,7 +24,7 @@ fun RecipeExecutor.simpleFragmentRecipe(
     layoutName: String,
     desc: String,
     isList: Boolean = false,
-    listInfo: ListInfo = ListInfo(),
+    moreInfo: MoreInfo = MoreInfo(),
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -39,6 +39,7 @@ fun RecipeExecutor.simpleFragmentRecipe(
             modelName,
             layoutName,
             desc,
+            moreInfo = moreInfo
         ), File(srcPath, "${modelName}Fragment.kt")
     )
 
@@ -49,13 +50,14 @@ fun RecipeExecutor.simpleFragmentRecipe(
             modelName,
             desc,
             isList,
-            listInfo.isDiff,
+            moreInfo.isDiff,
+            moreInfo = moreInfo
         ), File(srcPath, "${modelName}VM.kt")
     )
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName, isList, listInfo.isDiff, listInfo.isPageList),
+        layoutTemplate(packageName, modelName, isList, moreInfo.isDiff, moreInfo.isPageList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
 
@@ -67,7 +69,7 @@ fun RecipeExecutor.simpleFragmentRecipe(
             modulePackageName,
             packageName,
             modelName,
-            listInfo
+            moreInfo
         )
     }
 }
@@ -80,7 +82,7 @@ fun RecipeExecutor.simpleActivityRecipe(
     layoutName: String,
     desc: String,
     isList: Boolean = false,
-    listInfo: ListInfo = ListInfo(),
+    moreInfo: MoreInfo = MoreInfo(),
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -95,6 +97,7 @@ fun RecipeExecutor.simpleActivityRecipe(
             modelName,
             layoutName,
             desc,
+            moreInfo = moreInfo
         ), File(srcPath, "${modelName}Activity.kt")
     )
 
@@ -105,13 +108,14 @@ fun RecipeExecutor.simpleActivityRecipe(
             modelName,
             desc,
             isList,
-            listInfo.isDiff
+            moreInfo.isDiff,
+            moreInfo = moreInfo
         ), File(srcPath, "${modelName}VM.kt")
     )
 
     // 保存xml 布局文件
     save(
-        layoutTemplate(packageName, modelName, isList, listInfo.isDiff, listInfo.isPageList),
+        layoutTemplate(packageName, modelName, isList, moreInfo.isDiff, moreInfo.isPageList),
         File(File(resPath, "layout"), "${layoutName}.xml")
     )
 
@@ -121,7 +125,7 @@ fun RecipeExecutor.simpleActivityRecipe(
             modulePackageName,
             packageName,
             modelName,
-            listInfo
+            moreInfo
         )
     }
 }
@@ -131,7 +135,7 @@ fun RecipeExecutor.saveListFile(
     modulePackageName: String,
     packageName: String,
     modelName: String,
-    listInfo: ListInfo
+    moreInfo: MoreInfo
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
@@ -142,14 +146,14 @@ fun RecipeExecutor.saveListFile(
 
     // list layout xml
     save(
-        listLayoutTemplate(listInfo.isDiff, listInfo.isPageList),
-        File(layoutFolder, "${listInfo.listLayoutXmlName}.xml")
+        listLayoutTemplate(moreInfo.isDiff, moreInfo.isPageList),
+        File(layoutFolder, "${moreInfo.listLayoutXmlName}.xml")
     )
 
     // list item layout xml
     save(
         listItemLayoutTemplate(packageName, modelName),
-        File(layoutFolder, "${listInfo.itemLayoutXmlName}.xml")
+        File(layoutFolder, "${moreInfo.itemLayoutXmlName}.xml")
     )
 
     // list layout list model  item view model
@@ -158,7 +162,7 @@ fun RecipeExecutor.saveListFile(
             modulePackageName,
             packageName,
             modelName,
-            listInfo,
+            moreInfo,
             "${packageName}.entity",
         ), File(srcPath, "${modelName.getListFileName()}.kt")
     )

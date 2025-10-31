@@ -1,6 +1,7 @@
 package com.github.lcj0304.sandboxmvvm.template
 
 import com.android.tools.idea.wizard.template.underscoreToCamelCase
+import com.sun.tools.javac.code.Type.moreInfo
 
 
 /**
@@ -14,19 +15,36 @@ fun activityTemplate(
     modelName: String,
     layoutName: String,
     desc: String = "TODO:",
+    moreInfo: MoreInfo = MoreInfo()
 ): String {
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
+
+    val activityFullName = if (moreInfo.isEventPage) {
+        "com.sandboxol.center.view.activity.event.BaseEventActivity"
+    } else {
+        "com.sandboxol.common.base.app.mvvm.MvvmBaseActivity"
+    }
+
+    val activityName = if (moreInfo.isEventPage) {
+        "BaseEventActivity"
+    } else {
+        "MvvmBaseActivity"
+    }
+
+
+
+
     return """
 package $packageName      
 
-import com.sandboxol.common.base.app.mvvm.MvvmBaseActivity
+import $activityFullName
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
 import com.sandboxol.center.extension.getVMFromProvider
 
 ${getFileComments(desc)}
-class ${modelName}Activity:MvvmBaseActivity<${modelName}VM, ${bindingNameClass}>() {
+class ${modelName}Activity:${activityName}<${modelName}VM, ${bindingNameClass}>() {
     override val layoutId:Int
         get() = R.layout.${layoutName}
 

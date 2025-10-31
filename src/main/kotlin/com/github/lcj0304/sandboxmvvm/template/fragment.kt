@@ -14,20 +14,34 @@ fun fragmentTemplate(
     modelName: String,
     layoutName: String,
     desc: String = "TODO:",
+    moreInfo: MoreInfo = MoreInfo()
 ): String {
 
     val bindingNameClass = "${underscoreToCamelCase(layoutName)}Binding"
 
+    val fragmentFullName = if (moreInfo.isEventPage) {
+        "com.sandboxol.center.view.fragment.event.BaseEventFragment"
+    } else {
+        "com.sandboxol.common.base.app.mvvm.MvvmBaseFragment"
+    }
+
+    val fragmentName = if (moreInfo.isEventPage) {
+        "BaseEventFragment"
+    } else {
+        "MvvmBaseFragment"
+    }
+
+
     return """
 package $packageName
       
-import com.sandboxol.common.base.app.mvvm.MvvmBaseFragment
+import ${fragmentFullName}
 import ${modulePackageName}.R
 import ${modulePackageName}.databinding.${bindingNameClass}
 import com.sandboxol.center.extension.getVMFromProvider
 
 ${getFileComments(desc)}
-class ${modelName}Fragment:MvvmBaseFragment<${modelName}VM, ${bindingNameClass}>() {
+class ${modelName}Fragment:${fragmentName}<${modelName}VM, ${bindingNameClass}>() {
     override val layoutId:Int
         get() = R.layout.${layoutName}
 

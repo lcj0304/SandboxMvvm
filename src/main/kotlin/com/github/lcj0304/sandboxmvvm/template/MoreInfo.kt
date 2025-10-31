@@ -6,10 +6,11 @@ package com.github.lcj0304.sandboxmvvm.template
  * @author :liucj
  * @date : 2024/2/28 20:32
  */
-class ListInfo {
+class MoreInfo {
     var isDiff: Boolean = false
     var isPageList: Boolean = false
     var listLayoutXmlName: String = ""
     var itemLayoutXmlName: String = ""
     var entityName: String = "Any"
+    var isEventPage:Boolean = false
 }

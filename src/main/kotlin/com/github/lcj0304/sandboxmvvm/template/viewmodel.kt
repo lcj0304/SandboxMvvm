@@ -11,7 +11,8 @@ fun viewModelTemplate(
     desc: String = "TODO:",
     isListViewModel: Boolean = false,
     isDiffList:Boolean = false,
-    entityName:String = "Any"
+    entityName:String = "Any",
+    moreInfo: MoreInfo = MoreInfo()
 ): String {
     var listField = ""
     var diffImport = ""
@@ -27,6 +28,18 @@ fun viewModelTemplate(
         }
     }
 
+    val viewModelFullName = if (moreInfo.isEventPage) {
+        "com.sandboxol.center.view.activity.event.BaseEventViewModel"
+    } else {
+        "com.sandboxol.common.base.app.mvvm.BundleViewModel"
+    }
+
+    val viewModelName = if (moreInfo.isEventPage) {
+        "BaseEventViewModel"
+    } else {
+        "BundleViewModel"
+    }
+
 
     return """
 package $packageName
@@ -35,10 +48,10 @@ import android.app.Application
 import android.os.Bundle
 $diffImport
 import com.sandboxol.common.base.app.mvvm.BaseModel
-import com.sandboxol.common.base.app.mvvm.BundleViewModel
+import $viewModelFullName
         
 ${getFileComments(desc)}   
-class ${modelName}VM(context: Application, bundle:Bundle?):BundleViewModel<BaseModel>(context, bundle) {
+class ${modelName}VM(context: Application, bundle:Bundle?):${viewModelName}<BaseModel>(context, bundle) {
     val uc = UIObservable()
     $listField
     init {

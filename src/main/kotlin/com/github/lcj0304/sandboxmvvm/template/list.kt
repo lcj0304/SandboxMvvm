@@ -7,11 +7,11 @@ fun listFileStr(
     modulePackageName: String,
     packageName: String,
     modelName: String,
-    listInfo: ListInfo,
+    moreInfo: MoreInfo,
     entityPackage:String = "",
 ): String {
  val desc = ""
-    val entity = listInfo.entityName.ifEmpty {
+    val entity = moreInfo.entityName.ifEmpty {
         "Any"
     }
 
@@ -22,7 +22,7 @@ fun listFileStr(
     }"""
 
 
-    if (listInfo.isPageList) {
+    if (moreInfo.isPageList) {
         baseListModel = "PageListModel"
         baseListModelImport = """import com.sandboxol.common.widget.rv.pagerv.PageListModel
             import com.sandboxol.common.widget.rv.pagerv.PageData"""
@@ -52,7 +52,7 @@ ${getFileComments(desc)}
 class ${modelName.getListLayoutName()} : BaseListLayout() {
 
     override fun getLayoutId(): Int {
-        return R.layout.${listInfo.listLayoutXmlName}
+        return R.layout.${moreInfo.listLayoutXmlName}
     }
 }
 
@@ -61,7 +61,7 @@ ${getFileComments(desc)}
 class ${modelName.getListModelName()}(val context: Context?) : ${baseListModel}<${entity}>(context) {
     
     override fun onItemBind(itemBinder: ItemBinder, position: Int, item: ListItemViewModel<${entity}>?) {
-        itemBinder.bindItem(BR.ViewModel, R.layout.${listInfo.itemLayoutXmlName})
+        itemBinder.bindItem(BR.ViewModel, R.layout.${moreInfo.itemLayoutXmlName})
     }
 
     override fun getItemViewModel(item: ${entity}?): ListItemViewModel<${entity}> {

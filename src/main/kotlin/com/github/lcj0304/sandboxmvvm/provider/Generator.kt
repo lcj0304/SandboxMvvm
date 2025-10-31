@@ -1,7 +1,7 @@
 package com.github.lcj0304.sandboxmvvm.provider
 
 import com.android.tools.idea.wizard.template.*
-import com.github.lcj0304.sandboxmvvm.template.ListInfo
+import com.github.lcj0304.sandboxmvvm.template.MoreInfo
 import com.github.lcj0304.sandboxmvvm.template.getListLayoutItemXmlName
 import com.github.lcj0304.sandboxmvvm.template.getListLayoutXmlName
 import com.github.lcj0304.sandboxmvvm.template.getModulePackageName
@@ -26,6 +26,12 @@ val isDiffParameter = booleanParameter{
     default = false
     help = "列表是否使用DiffUtil"
     visible = {isListParameter.value}
+}
+
+val isEventParameter = booleanParameter{
+    name = "是否为活动页面"
+    default = false
+    help = "活动页面"
 }
 
 val descName = stringParameter {
@@ -115,6 +121,7 @@ val fragmentGenerator
             TextFieldWidget(descName),
             PackageNameWidget(classPackageName),
             TextFieldWidget(modulePackageName),
+            CheckBoxWidget(isEventParameter),
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
@@ -125,11 +132,12 @@ val fragmentGenerator
 
 
         recipe = {
-            val listInfo = ListInfo()
-            listInfo.isDiff = isDiffParameter.value
-            listInfo.isPageList = isPageListParameter.value
-            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            val moreInfo = MoreInfo()
+            moreInfo.isDiff = isDiffParameter.value
+            moreInfo.isPageList = isPageListParameter.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            moreInfo.isEventPage = isEventParameter.value
             simpleFragmentRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -138,7 +146,7 @@ val fragmentGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                listInfo
+                moreInfo
             )
         }
     }
@@ -201,6 +209,7 @@ val activityGenerator
             TextFieldWidget(descName),
             PackageNameWidget(classPackageName),
             TextFieldWidget(modulePackageName),
+            CheckBoxWidget(isEventParameter),
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
@@ -210,11 +219,12 @@ val activityGenerator
         )
 
         recipe = {
-            val listInfo = ListInfo()
-            listInfo.isDiff = isDiffParameter.value
-            listInfo.isPageList = isPageListParameter.value
-            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            val moreInfo = MoreInfo()
+            moreInfo.isDiff = isDiffParameter.value
+            moreInfo.isPageList = isPageListParameter.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            moreInfo.isEventPage = isEventParameter.value
             simpleActivityRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -223,7 +233,7 @@ val activityGenerator
                 layoutName = layoutName.value,
                 desc = descName.value,
                 isList = isListParameter.value,
-                listInfo
+                moreInfo
 //                entityName = entityName.value
             )
         }
@@ -278,17 +288,17 @@ val listViewGenerator
         )
 
         recipe = {
-            val listInfo = ListInfo()
-            listInfo.isDiff = isDiffParameter.value
-            listInfo.isPageList = isPageListParameter.value
-            listInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            listInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            val moreInfo = MoreInfo()
+            moreInfo.isDiff = isDiffParameter.value
+            moreInfo.isPageList = isPageListParameter.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             saveListFile(
                 it as ModuleTemplateData,
                 modulePackageName.value,
                 classPackageName.value,
                 modelName.value,
-                listInfo
+                moreInfo
             )
         }
     }

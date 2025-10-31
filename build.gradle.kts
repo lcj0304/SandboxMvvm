@@ -39,7 +39,7 @@ dependencies {
     intellijPlatform {
 //        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
 //        androidStudio("2024.3.1")
-        local("C:\\Program Files\\Android\\Android Studio1")
+        local("C:\\Program Files\\Android\\Android Studio")
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
 
