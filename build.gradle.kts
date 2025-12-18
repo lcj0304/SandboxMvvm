@@ -39,7 +39,7 @@ dependencies {
     intellijPlatform {
 //        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
 //        androidStudio("2024.3.1")
-        local("C:\\Program Files\\Android\\Android Studio")
+        local(layout.projectDirectory.dir("C:/Program Files/Android/Android Studio"))
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
 
@@ -136,23 +136,24 @@ tasks {
     }
 }
 
+// 编译出问题，注释掉。
 intellijPlatformTesting {
-    runIde {
-        register("runIdeForUiTests") {
-            task {
-                jvmArgumentProviders += CommandLineArgumentProvider {
-                    listOf(
-                        "-Drobot-server.port=8082",
-                        "-Dide.mac.message.dialogs.as.sheets=false",
-                        "-Djb.privacy.policy.text=<!--999.999-->",
-                        "-Djb.consents.confirmation.enabled=false",
-                    )
-                }
-            }
-
-            plugins {
-                robotServerPlugin()
-            }
-        }
-    }
+//    runIde {
+//        register("runIdeForUiTests") {
+//            task {
+//                jvmArgumentProviders += CommandLineArgumentProvider {
+//                    listOf(
+//                        "-Drobot-server.port=8082",
+//                        "-Dide.mac.message.dialogs.as.sheets=false",
+//                        "-Djb.privacy.policy.text=<!--999.999-->",
+//                        "-Djb.consents.confirmation.enabled=false",
+//                    )
+//                }
+//            }
+//
+//            plugins {
+//                robotServerPlugin()
+//            }
+//        }
+//    }
 }

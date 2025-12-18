@@ -30,7 +30,11 @@ fun fragmentTemplate(
     } else {
         "MvvmBaseFragment"
     }
-
+    val callSuperInitViewObservable = if (moreInfo.isEventPage) {
+        "super.initViewObservable()"
+    } else {
+        ""
+    }
 
     return """
 package $packageName
@@ -54,6 +58,7 @@ class ${modelName}Fragment:${fragmentName}<${modelName}VM, ${bindingNameClass}>(
     }  
 
     override fun initViewObservable() {
+        $callSuperInitViewObservable
         initView()
         viewModel?.uc?.apply {
             

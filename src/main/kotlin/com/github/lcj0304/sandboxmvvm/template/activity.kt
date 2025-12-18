@@ -32,6 +32,11 @@ fun activityTemplate(
         "MvvmBaseActivity"
     }
 
+    val callSuperInitViewObservable = if (moreInfo.isEventPage) {
+        "super.initViewObservable()"
+    } else {
+        ""
+    }
 
 
 
@@ -57,6 +62,7 @@ class ${modelName}Activity:${activityName}<${modelName}VM, ${bindingNameClass}>(
     }  
 
     override fun initViewObservable() {
+        $callSuperInitViewObservable
         viewModel?.uc?.apply {
             
         }
