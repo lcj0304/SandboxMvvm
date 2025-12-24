@@ -152,7 +152,7 @@ fun RecipeExecutor.saveListFile(
 
     // list item layout xml
     save(
-        listItemLayoutTemplate(packageName, modelName),
+        listItemLayoutTemplate(modulePackageName, packageName, modelName, moreInfo),
         File(layoutFolder, "${moreInfo.itemLayoutXmlName}.xml")
     )
 

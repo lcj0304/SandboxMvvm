@@ -34,6 +34,13 @@ val isEventParameter = booleanParameter{
     help = "活动页面"
 }
 
+val isTaskList = booleanParameter {
+    name = "是否为任务列表"
+    default = false
+    help = "活动任务列表，将会生成任务列表相关代码"
+    visible = {isListParameter.value && isEventParameter.value}
+}
+
 val descName = stringParameter {
     name = "类的描述信息"
     default = "描述信息"
@@ -125,6 +132,7 @@ val fragmentGenerator
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
+            CheckBoxWidget(isTaskList),
             TextFieldWidget(listLayoutXmlFileName),
             TextFieldWidget(itemLayoutXmlFileName),
 //            TextFieldWidget(entityName),
@@ -138,6 +146,7 @@ val fragmentGenerator
             moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
             moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             moreInfo.isEventPage = isEventParameter.value
+            moreInfo.isTaskList = isTaskList.value
             simpleFragmentRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -213,6 +222,7 @@ val activityGenerator
             CheckBoxWidget(isListParameter),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
+            CheckBoxWidget(isTaskList),
             TextFieldWidget(listLayoutXmlFileName),
             TextFieldWidget(itemLayoutXmlFileName),
 //            TextFieldWidget(entityName),
@@ -225,6 +235,7 @@ val activityGenerator
             moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
             moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             moreInfo.isEventPage = isEventParameter.value
+            moreInfo.isTaskList = isTaskList.value
             simpleActivityRecipe(
                 moduleData = it as ModuleTemplateData,
                 modulePackageName = modulePackageName.value,
@@ -283,6 +294,7 @@ val listViewGenerator
             TextFieldWidget(modulePackageName),
             CheckBoxWidget(isPageListParameter),
             CheckBoxWidget(isDiffParameter),
+            CheckBoxWidget(isTaskList),
             TextFieldWidget(listLayoutXmlFileName),
             TextFieldWidget(itemLayoutXmlFileName),
         )
@@ -291,6 +303,7 @@ val listViewGenerator
             val moreInfo = MoreInfo()
             moreInfo.isDiff = isDiffParameter.value
             moreInfo.isPageList = isPageListParameter.value
+            moreInfo.isTaskList = isTaskList.value
             moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
             moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
             saveListFile(

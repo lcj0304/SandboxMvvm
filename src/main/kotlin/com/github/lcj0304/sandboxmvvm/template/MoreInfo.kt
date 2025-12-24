@@ -13,4 +13,5 @@ class MoreInfo {
     var itemLayoutXmlName: String = ""
     var entityName: String = "Any"
     var isEventPage:Boolean = false
+    var isTaskList:Boolean = false
 }

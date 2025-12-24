@@ -98,24 +98,31 @@ fun listLayoutTemplate(
  * list layout
  * @return String
  */
-fun listItemLayoutTemplate(packageName: String, modelName: String): String {
+fun listItemLayoutTemplate(modulePackageName:String, packageName: String, modelName: String, moreInfo: MoreInfo): String {
+    var xmlChildren = ""
+    var importR = ""
+    if (moreInfo.isTaskList) {
+        xmlChildren = taskListItemLayout
+        importR = """<import type="${modulePackageName}.R" />"""
+    }
+
     return """<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:bind="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-<data>
+    <data>
+        <variable
+        name="ViewModel"
+        type="${packageName}.${modelName.getListItemViewModelName()}" />
+        $importR
+    </data>
 
-<variable
-name="ViewModel"
-type="${packageName}.${modelName.getListItemViewModelName()}" />
-</data>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        $xmlChildren
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>"""
 }
 
@@ -209,3 +216,62 @@ val diffPageDataLayout = """
 />
 """.trimIndent()
 
+
+val taskListItemLayout = """
+        <com.sandboxol.center.view.newtheme.widget.reward.CommonRewardView
+        android:id="@+id/rewardView"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginStart="@dimen/dp_6"
+        bind:layout_constraintBottom_toBottomOf="parent"
+        bind:layout_constraintStart_toStartOf="parent"
+        bind:layout_constraintTop_toTopOf="parent"
+        bind:onClickCommand="@{ViewModel.onItemClickCommand}"
+        bind:quantityTextSizeRes="@{R.dimen.sp_11}"
+        bind:reward="@{ViewModel.reward}"
+        bind:rewardPaddingRes="@{R.dimen.dp_4}"
+        bind:showQuantityWhen1="@{true}" />
+
+    <TextView
+        android:id="@+id/tvTaskDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_9"
+        bind:autoSizeMaxTextSize="@dimen/sp_12"
+        bind:autoSizeMinTextSize="@dimen/sp_9"
+        bind:autoSizeTextType="uniform"
+        android:gravity="start"
+        android:text="@{ViewModel.taskText}"
+        android:textColor="#334155"
+        bind:layout_constraintBottom_toBottomOf="@+id/rewardView"
+        bind:layout_constraintEnd_toStartOf="@+id/eventBtnView"
+        bind:layout_constraintStart_toEndOf="@+id/rewardView"
+        bind:layout_constraintTop_toTopOf="@+id/rewardView"
+        tools:text="Complete 5 matches in any game"
+        />
+
+    <com.sandboxol.center.view.widget.progress.NinePatchProgressView
+        android:id="@+id/progressView"
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_2"
+        bind:backgroundResId="@{ViewModel.progressBackgroundRedId}"
+        bind:foregroundRedId="@{ViewModel.progressForegroundRedId}"
+        bind:layout_constraintEnd_toEndOf="@+id/eventBtnView"
+        bind:layout_constraintStart_toStartOf="@+id/eventBtnView"
+        bind:layout_constraintTop_toTopOf="@+id/rewardView"
+        bind:maxProgress="@{ViewModel.maxProgress}"
+        bind:progress="@{ViewModel.progress}"
+        bind:showProgressText="@{true}" />
+
+    <com.sandboxol.center.view.widget.event.BaseEventButtonView
+        android:id="@+id/eventBtnView"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_26"
+        android:layout_marginEnd="@dimen/dp_7"
+        bind:layout_constraintBottom_toBottomOf="@id/rewardView"
+        bind:layout_constraintEnd_toEndOf="parent"
+        bind:baseTask="@{ViewModel.item}"
+        bind:onClickCommand="@{ViewModel.onButtonClickCommand}" />
+        """.trimIndent()
