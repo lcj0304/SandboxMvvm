@@ -199,19 +199,23 @@ fun RecipeExecutor.createModule(
 //    D:\source\android\blockman-go-android-innereditor\Librarys\libBaseRes\src\main\java\com\sandboxol\center\router
 //    D:\source\android\blockman-go-android-innereditor\Blockymods\app
 
-    val projectPath = rootPath.substringBeforeLast("\\").substringBeforeLast("\\").plus("\\")
-    val appParentPath = rootPath.substringBeforeLast("\\").plus("\\")
+
+    val projectPath =
+        rootPath.substringBeforeLast(File.separator).substringBeforeLast(File.separator)
+            .plus(File.separator)
+    val appParentPath = rootPath.substringBeforeLast(File.separator).plus(File.separator)
 
     val moduleNameLowercase = moduleName.lowercase(Locale.getDefault())
     val modulePackName = "com.sandboxol.$moduleNameLowercase"
     val packagePath =
-        modulePackName.replace(".", "\\")
+        modulePackName.replace(".", File.separator)
 
 
-    val moduleBasePath = appParentPath + moduleNameLowercase + "\\"
-    val moduleSrcPath = moduleBasePath + "src\\main\\java\\" + packagePath
-    val moduleResPath = moduleBasePath + "src\\main\\res"
-    val moduleMainPath = moduleBasePath + "src\\main\\"
+    val moduleBasePath = appParentPath + moduleNameLowercase + File.separator
+    val moduleSrcPath =
+        moduleBasePath + "src${File.separator}main${File.separator}java${File.separator}" + packagePath
+    val moduleResPath = moduleBasePath + "src${File.separator}main${File.separator}res"
+    val moduleMainPath = moduleBasePath + "src${File.separator}main${File.separator}"
 
 
     // 模块基础文件  build.gradle AndroidManifest.xml  proguard-rules.pro
@@ -308,14 +312,14 @@ fun RecipeExecutor.createLibBaseResFile(projectBasePath: String, moduleName: Str
     save(
         getServiceInterfaceContent(moduleName),
         File(
-            projectBasePath.plus("""\Librarys\libBaseRes\src\main\java\com\sandboxol\center\router\moduleApi"""),
+            projectBasePath.plus("""${File.separator}Librarys${File.separator}libBaseRes${File.separator}src${File.separator}main${File.separator}java${File.separator}com${File.separator}sandboxol${File.separator}center${File.separator}router${File.separator}moduleApi"""),
             "${moduleName}Service.kt"
         )
     )
     save(
         getModuleManagerContent(moduleName),
         File(
-            projectBasePath.plus("""\Librarys\libBaseRes\src\main\java\com\sandboxol\center\router\manager"""),
+            projectBasePath.plus("""${File.separator}Librarys${File.separator}libBaseRes${File.separator}src${File.separator}main${File.separator}java${File.separator}com${File.separator}sandboxol${File.separator}center${File.separator}router${File.separator}manager"""),
             "${moduleName}Manager.kt"
         )
     )
@@ -344,13 +348,13 @@ fun addModuleInfoToModuleManager(projectPath: String, appParentPath: String, mod
 
     // 模块添加到 setting.gradle 中
     insertIncludeAfterApp(
-        Path.of(appParentPath.plus("""\settings.gradle""")),
+        Path.of(appParentPath.plus("""${File.separator}settings.gradle""")),
         moduleName
     )
 
     // 将模块添加到app 模块的 build.gradle 依赖中
     addModuleDependency(
-        Path.of(appParentPath.plus("""\app\build.gradle""")),
+        Path.of(appParentPath.plus("""${File.separator}app${File.separator}build.gradle""")),
         moduleName.lowercase()
     )
 }
