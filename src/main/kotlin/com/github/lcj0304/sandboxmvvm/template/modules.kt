@@ -3,8 +3,6 @@ package com.github.lcj0304.sandboxmvvm.template
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiExpression
-import com.intellij.psi.PsiField
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiModifier
@@ -265,38 +263,35 @@ fun addRouterServiceInnerClass(
                     return
                 }
 
-                // 确保在 Write Command 中执行 PSI 修改，解决"不执行"的问题
-                com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) {
-                    // 1. 创建内部类
-                    val innerClass = elementFactory.createClass(moduleName)
-                    PsiUtil.setModifierProperty(innerClass, PsiModifier.PUBLIC, true)
-                    PsiUtil.setModifierProperty(innerClass, PsiModifier.STATIC, true)
+                // 1. 创建内部类
+                val innerClass = elementFactory.createClass(moduleName)
+                PsiUtil.setModifierProperty(innerClass, PsiModifier.PUBLIC, true)
+                PsiUtil.setModifierProperty(innerClass, PsiModifier.STATIC, true)
 
-                    // 2. 创建 BASE 字段
-                    val base = elementFactory.createField("BASE", psiType)
-                    PsiUtil.setModifierProperty(base, PsiModifier.PRIVATE, true)
-                    PsiUtil.setModifierProperty(base, PsiModifier.STATIC, true)
-                    PsiUtil.setModifierProperty(base, PsiModifier.FINAL, true)
-                    base.initializer = elementFactory.createExpressionFromText("\"/$moduleName\"", base)
+                // 2. 创建 BASE 字段
+                val base = elementFactory.createField("BASE", psiType)
+                PsiUtil.setModifierProperty(base, PsiModifier.PRIVATE, true)
+                PsiUtil.setModifierProperty(base, PsiModifier.STATIC, true)
+                PsiUtil.setModifierProperty(base, PsiModifier.FINAL, true)
+                base.initializer = elementFactory.createExpressionFromText("\"/$moduleName\"", base)
 
-                    // 关键点1：add() 会返回添加后的 PSI 元素，将其作为锚点
-                    val addedBase = innerClass.add(base)
+                // 关键点1：add() 会返回添加后的 PSI 元素，将其作为锚点
+                val addedBase = innerClass.add(base)
 
-                    // 3. 创建 SERVICES 字段
-                    val serviceNameField = elementFactory.createField("SERVICES", psiType)
-                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.PUBLIC, true)
-                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.STATIC, true)
-                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.FINAL, true)
-                    serviceNameField.initializer =
-                        elementFactory.createExpressionFromText("BASE + \"/service\"", serviceNameField)
+                // 3. 创建 SERVICES 字段
+                val serviceNameField = elementFactory.createField("SERVICES", psiType)
+                PsiUtil.setModifierProperty(serviceNameField, PsiModifier.PUBLIC, true)
+                PsiUtil.setModifierProperty(serviceNameField, PsiModifier.STATIC, true)
+                PsiUtil.setModifierProperty(serviceNameField, PsiModifier.FINAL, true)
+                serviceNameField.initializer =
+                    elementFactory.createExpressionFromText("BASE + \"/service\"", serviceNameField)
 
-                    // 关键点2：使用 addAfter 并传入 addedBase，强制 SERVICES 在 BASE 后面
-                    innerClass.addAfter(serviceNameField, addedBase)
+                // 关键点2：使用 addAfter 并传入 addedBase，强制 SERVICES 在 BASE 后面
+                innerClass.addAfter(serviceNameField, addedBase)
 
-                    // 4. 将构建好的内部类添加到父类
-                    targetClass.add(innerClass)
-                    println("==========================>> Added Router Inner Class: $moduleName")
-                }
+                // 4. 将构建好的内部类添加到父类
+                targetClass.add(innerClass)
+                println("==========================>> Added Router Inner Class: $moduleName")
             }
         }
     } else {
