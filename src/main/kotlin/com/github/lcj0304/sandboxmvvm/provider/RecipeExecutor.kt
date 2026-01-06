@@ -313,7 +313,7 @@ fun RecipeExecutor.createLibBaseResFile(projectBasePath: String, moduleName: Str
         getServiceInterfaceContent(moduleName),
         File(
             projectBasePath.plus("""${File.separator}Librarys${File.separator}libBaseRes${File.separator}src${File.separator}main${File.separator}java${File.separator}com${File.separator}sandboxol${File.separator}center${File.separator}router${File.separator}moduleApi"""),
-            "${moduleName}Service.kt"
+            "I${moduleName}Service.kt"
         )
     )
     save(

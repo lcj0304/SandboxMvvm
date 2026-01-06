@@ -11,7 +11,6 @@ import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiType
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiUtil
-import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -238,18 +237,17 @@ fun addModuleDependency(buildGradlePath: Path, moduleName: String) {
     }
 }
 
-/**
- * 定义服务路由内部类
- */
+
 fun addRouterServiceInnerClass(
     project: Project,
     current: VirtualFile,
     moduleName: String
 ) {
-
     val elementFactory = JavaPsiFacade.getElementFactory(project)
+
+    // 确保能找到 String 类型
     val psiType: PsiType =
-        PsiType.getTypeByName("java.lang.String", project, GlobalSearchScope.EMPTY_SCOPE)
+        PsiType.getTypeByName("java.lang.String", project, GlobalSearchScope.allScope(project))
 
     val pathDir: VirtualFile? =
         current.findFileByRelativePath("../Librarys/libBaseRes/src/main/java/com/sandboxol/center/router/path")
@@ -258,42 +256,46 @@ fun addRouterServiceInnerClass(
         val children = pathDir.children ?: return
         for (vf in children) {
             if (!vf.isDirectory && vf.name == "RouterServicePath.java") {
-                val psiFile = PsiManager.getInstance(project).findFile(vf)
-                val psiJavaFile = psiFile as PsiJavaFile?
-                val classes = psiJavaFile!!.classes
-                var psiClass = classes[0].findInnerClassByName(moduleName, false)
-                if (psiClass == null) {
-                    val base: PsiField = elementFactory.createField("BASE", psiType)
+                val psiFile =
+                    PsiManager.getInstance(project).findFile(vf) as? PsiJavaFile ?: continue
+                val targetClass = psiFile.classes.firstOrNull() ?: continue
+
+                // 幂等性检查
+                if (targetClass.findInnerClassByName(moduleName, false) != null) {
+                    return
+                }
+
+                // 确保在 Write Command 中执行 PSI 修改，解决"不执行"的问题
+                com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) {
+                    // 1. 创建内部类
+                    val innerClass = elementFactory.createClass(moduleName)
+                    PsiUtil.setModifierProperty(innerClass, PsiModifier.PUBLIC, true)
+                    PsiUtil.setModifierProperty(innerClass, PsiModifier.STATIC, true)
+
+                    // 2. 创建 BASE 字段
+                    val base = elementFactory.createField("BASE", psiType)
                     PsiUtil.setModifierProperty(base, PsiModifier.PRIVATE, true)
                     PsiUtil.setModifierProperty(base, PsiModifier.STATIC, true)
                     PsiUtil.setModifierProperty(base, PsiModifier.FINAL, true)
-                    val baseExpression: PsiExpression =
-                        elementFactory.createExpressionFromText("\"/$moduleName\"", null)
-                    base.initializer = baseExpression
+                    base.initializer = elementFactory.createExpressionFromText("\"/$moduleName\"", base)
 
-                    val serviceName: PsiField =
-                        elementFactory.createField("SERVICES", psiType)
-                    PsiUtil.setModifierProperty(serviceName, PsiModifier.PUBLIC, true)
-                    PsiUtil.setModifierProperty(serviceName, PsiModifier.STATIC, true)
-                    PsiUtil.setModifierProperty(serviceName, PsiModifier.FINAL, true)
-                    val serviceExpression: PsiExpression =
-                        elementFactory.createExpressionFromText("BASE + \"/service\"", null)
-                    serviceName.initializer = serviceExpression
+                    // 关键点1：add() 会返回添加后的 PSI 元素，将其作为锚点
+                    val addedBase = innerClass.add(base)
 
-                    val baseText = base.text
-                    val serviceNameText = serviceName.text
+                    // 3. 创建 SERVICES 字段
+                    val serviceNameField = elementFactory.createField("SERVICES", psiType)
+                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.PUBLIC, true)
+                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.STATIC, true)
+                    PsiUtil.setModifierProperty(serviceNameField, PsiModifier.FINAL, true)
+                    serviceNameField.initializer =
+                        elementFactory.createExpressionFromText("BASE + \"/service\"", serviceNameField)
 
-                    psiClass = elementFactory.createClassFromText(
-                        """
-                            $baseText
-                            $serviceNameText
-                            """.trimIndent(), null
-                    )
-                    psiClass.setName(moduleName)
-                    PsiUtil.setModifierProperty(psiClass, PsiModifier.PUBLIC, true)
-                    PsiUtil.setModifierProperty(psiClass, PsiModifier.STATIC, true)
+                    // 关键点2：使用 addAfter 并传入 addedBase，强制 SERVICES 在 BASE 后面
+                    innerClass.addAfter(serviceNameField, addedBase)
 
-                    classes[0].add(psiClass)
+                    // 4. 将构建好的内部类添加到父类
+                    targetClass.add(innerClass)
+                    println("==========================>> Added Router Inner Class: $moduleName")
                 }
             }
         }
@@ -301,7 +303,6 @@ fun addRouterServiceInnerClass(
         require(false) { "pathDir 不能为空: ${current.path} ../Librarys/libBaseRes/src/main/java/com/sandboxol/center/router/path" }
     }
 }
-
 
 fun addModuleAppConstAndAppendInitEntry(
     project: Project,
@@ -341,21 +342,21 @@ fun addModuleAppConstAndAppendInitEntry(
                 val initModuleNames = "initModuleNames"
                 val initModuleArray = classes[0].findFieldByName(initModuleNames, false)
                 if (initModuleArray != null) {
-                    val copy = initModuleArray.copy() as PsiField
+                    val initializer = initModuleArray.initializer
+                    // 使用标准的 PSI 类型判断和添加操作，而不是脆弱的字符串替换
+                    if (initializer is com.intellij.psi.PsiArrayInitializerExpression) {
+                        // 幂等性检查：遍历现有的初始化表达式，避免重复添加
+                        val alreadyExists = initializer.initializers.any { it.text == serviceName }
+                        if (alreadyExists) {
+                            return
+                        }
 
-                    val initializer = copy.initializer
-                    val text = initializer!!.text
-                    // 已经包含了该条目就不再添加， 过滤一下，不知道为啥会添加两次
-                    if (text.contains(serviceName)) {
-                        return
+                        println("==========================>> Adding $serviceName")
+                        // 创建新的表达式并添加到数组初始化列表中
+                        val newExpression =
+                            elementFactory.createExpressionFromText(serviceName, initializer)
+                        initializer.add(newExpression)
                     }
-                    initModuleArray.delete()
-                    val replace = text.replace("}", ",\n            $serviceName}")
-                    println("==========================>>")
-                    println("replace=$text")
-                    val psiExpression = elementFactory.createExpressionFromText(replace, null)
-                    copy.initializer = psiExpression
-                    classes[0].add(copy)
                 }
             }
         }
