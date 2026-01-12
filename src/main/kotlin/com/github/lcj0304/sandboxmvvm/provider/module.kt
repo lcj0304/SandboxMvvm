@@ -44,7 +44,7 @@ val moduleGenerator
         recipe = {
             createModule(
                 it as ModuleTemplateData,
-                moduleName = moduleName.value,
+                moduleName = moduleName.value.trim(),
             )
         }
     }

@@ -143,17 +143,17 @@ val fragmentGenerator
             val moreInfo = MoreInfo()
             moreInfo.isDiff = isDiffParameter.value
             moreInfo.isPageList = isPageListParameter.value
-            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value.trim()
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value.trim()
             moreInfo.isEventPage = isEventParameter.value
             moreInfo.isTaskList = isTaskList.value
             simpleFragmentRecipe(
                 moduleData = it as ModuleTemplateData,
-                modulePackageName = modulePackageName.value,
-                packageName = classPackageName.value,
-                modelName = modelName.value,
-                layoutName = layoutName.value,
-                desc = descName.value,
+                modulePackageName = modulePackageName.value.trim(),
+                packageName = classPackageName.value.trim(),
+                modelName = modelName.value.trim(),
+                layoutName = layoutName.value.trim(),
+                desc = descName.value.trim(),
                 isList = isListParameter.value,
                 moreInfo
             )
@@ -232,17 +232,17 @@ val activityGenerator
             val moreInfo = MoreInfo()
             moreInfo.isDiff = isDiffParameter.value
             moreInfo.isPageList = isPageListParameter.value
-            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value.trim()
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value.trim()
             moreInfo.isEventPage = isEventParameter.value
             moreInfo.isTaskList = isTaskList.value
             simpleActivityRecipe(
                 moduleData = it as ModuleTemplateData,
-                modulePackageName = modulePackageName.value,
-                packageName = classPackageName.value,
-                modelName = modelName.value,
-                layoutName = layoutName.value,
-                desc = descName.value,
+                modulePackageName = modulePackageName.value.trim(),
+                packageName = classPackageName.value.trim(),
+                modelName = modelName.value.trim(),
+                layoutName = layoutName.value.trim(),
+                desc = descName.value.trim(),
                 isList = isListParameter.value,
                 moreInfo
 //                entityName = entityName.value
@@ -304,13 +304,13 @@ val listViewGenerator
             moreInfo.isDiff = isDiffParameter.value
             moreInfo.isPageList = isPageListParameter.value
             moreInfo.isTaskList = isTaskList.value
-            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value
-            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value
+            moreInfo.listLayoutXmlName = listLayoutXmlFileName.value.trim()
+            moreInfo.itemLayoutXmlName = itemLayoutXmlFileName.value.trim()
             saveListFile(
                 it as ModuleTemplateData,
-                modulePackageName.value,
-                classPackageName.value,
-                modelName.value,
+                modulePackageName.value.trim(),
+                classPackageName.value.trim(),
+                modelName.value.trim(),
                 moreInfo
             )
         }

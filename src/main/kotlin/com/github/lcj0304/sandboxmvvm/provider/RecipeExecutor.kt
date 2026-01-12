@@ -41,9 +41,6 @@ fun RecipeExecutor.simpleFragmentRecipe(
 ) {
     val (projectData) = moduleData
     val project = projectInstance ?: return
-    require(false) {
-        "project.basePath: is ${project.basePath}"
-    }
 
     addAllKotlinDependencies(moduleData)
     val srcPath = moduleData.srcDir.absolutePath

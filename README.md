@@ -9,9 +9,9 @@
 快速创建沙盒 模块、Mvvm框架Activity或Fragment、ViewModel和xml布局插件，
 包含更详细的活动BaseEventActivity和BaseEventFragment模板，和任务列表模块
 
-- 创建activity或Fragment    New-Activity 或Fragment项，选中Sandbox mvvm activity（fragment)
+- 创建activity或Fragment 在需求生成类的文件夹下 右键New-Activity 或Fragment项，选中Sandbox mvvm activity（fragment)， 勾选列表，则会生成列表相关的代码。勾选是否是活动页面，会继承BaseEventActivity或BaseEventFragment
 - 只创建列表相关 New-Fragment 选中sandbox list
-- 创建模块 创建模块，需要在app模块右键New-Other-**sandbox Module**，输入模块名即可，不用管下面的源代码目录
+- 创建模块需要在app模块右键New-Other-**sandbox Module**，输入模块名即可，不用管下面的源代码目录
 
 
 <!-- Plugin description end -->
