@@ -21,12 +21,21 @@ kotlin {
 
 // Configure project's dependencies
 repositories {
+    // 1. 阿里云公共仓库 (最优先)
+    maven { setUrl("https://maven.aliyun.com/repository/public") }
+
+    // 2. 阿里云 Google 镜像
+    maven { setUrl("https://maven.aliyun.com/repository/google") }
+
+    // 3. 阿里云 Gradle 插件镜像
+    maven { setUrl("https://maven.aliyun.com/repository/gradle-plugin") }
+
     mavenCentral()
 
     // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
+    // IntelliJ Platform Gradle Plugin Repositories Extension
     intellijPlatform {
         defaultRepositories()
-
     }
 }
 
@@ -39,7 +48,7 @@ dependencies {
     intellijPlatform {
 //        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
 //        androidStudio("2024.3.1")
-        local(layout.projectDirectory.dir("C:/Program Files/Android/Android Studio"))
+        local(file("C:/Program Files/Android/Android Studio"))
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
 
@@ -99,7 +108,8 @@ intellijPlatform {
         // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = providers.gradleProperty("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+        channels = providers.gradleProperty("pluginVersion")
+            .map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
     }
 
     pluginVerification {
